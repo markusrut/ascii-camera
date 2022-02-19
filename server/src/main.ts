@@ -4,6 +4,7 @@ import fileUpload from "express-fileupload";
 import cors from "cors";
 import Jimp from "jimp";
 import fs from "fs";
+import { process as processImage, save } from "./image";
 
 try {
   var server = express();
@@ -16,20 +17,24 @@ try {
     res.send("OK");
   });
 
+  server.use("/test", async (req, res) => {
+    const testImagePath = "./images/test.jpg";
+    await processImage(testImagePath);
+    res.json("Image processed");
+  });
+
   server.post("/image", async (req, res) => {
-    console.log("Received image", req.body);
-
-    if (req.body.base64) {
-      console.log("writing file");
-
-      fs.writeFileSync("./image.jpg", req.body.base64, "base64");
-
-      console.log("file written");
-
-      const readFile = await Jimp.read("./image.jpg");
-
-      console.log("read file", readFile);
+    const image = req.files?.image as fileUpload.UploadedFile;
+    if (!image) {
+      res.status(400).send("No image provided");
+      return;
     }
+    const imageName = image.name;
+    const imageType = image.mimetype;
+    const imageData = image.data;
+
+    const imagePath = save(imageName, imageData);
+    await processImage(imagePath);
 
     res.json("Image received");
   });

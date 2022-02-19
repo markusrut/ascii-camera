@@ -1,13 +1,7 @@
 import { Camera } from "expo-camera";
-import {
-  CameraCapturedPicture,
-  ImageType,
-} from "expo-camera/build/Camera.types";
-import { Buffer } from "buffer";
-import { StatusBar } from "expo-status-bar";
+import { CameraCapturedPicture } from "expo-camera/build/Camera.types";
 import React, { useEffect, useRef, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Pica from "pica";
 
 export default function App() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -34,15 +28,10 @@ export default function App() {
   const takePicture = async () => {
     const picture = await cameraRef.current?.takePictureAsync({
       quality: 1,
-      base64: true,
+      base64: false,
     });
-    // if (picture?.base64) {
-    //   setImageUri(picture.uri);
-    //   console.log(picture.height);
-    //   console.log(picture.width);
-    // }
 
-    if (picture?.base64) {
+    if (picture) {
       setImageUri(picture.uri);
       console.log("got picture", picture);
       await postCameraCapture(picture);
@@ -50,10 +39,18 @@ export default function App() {
   };
 
   const postCameraCapture = async (cameraCapture: CameraCapturedPicture) => {
+    console.log("cameraCapture", cameraCapture);
+
+    let localUri = cameraCapture.uri;
+    let filename = localUri.split("/").pop() as string;
+    let filetypeMatch = /\.(\w+)$/.exec(filename);
+    let type = filetypeMatch ? `image/${filetypeMatch[1]}` : `image`;
+
     const formData = new FormData();
-    formData.append("height", cameraCapture.height.toString());
-    formData.append("width", cameraCapture.width.toString());
-    formData.append("base64", cameraCapture.base64!);
+    formData.append("image", { uri: localUri, name: filename, type });
+
+    console.log("formData", formData);
+
     const response = await fetch("http://192.168.1.58:4000/image", {
       method: "POST",
       body: formData,

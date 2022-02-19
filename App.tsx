@@ -1,13 +1,19 @@
 import { Camera } from "expo-camera";
-import { ImageType } from "expo-camera/build/Camera.types";
+import {
+  CameraCapturedPicture,
+  ImageType,
+} from "expo-camera/build/Camera.types";
+import { Buffer } from "buffer";
 import { StatusBar } from "expo-status-bar";
 import React, { useEffect, useRef, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Pica from "pica";
 
 export default function App() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const cameraRef = useRef<Camera>(null);
+  const imageRef = useRef<Image>(null);
 
   const [imageUri, setImageUri] = useState<string | null>(null);
 
@@ -27,10 +33,33 @@ export default function App() {
   };
   const takePicture = async () => {
     const picture = await cameraRef.current?.takePictureAsync({
-      imageType: ImageType.png,
-      quality: 0.5,
+      quality: 1,
+      base64: true,
     });
-    if (picture) setImageUri(picture.uri);
+    // if (picture?.base64) {
+    //   setImageUri(picture.uri);
+    //   console.log(picture.height);
+    //   console.log(picture.width);
+    // }
+
+    if (picture?.base64) {
+      setImageUri(picture.uri);
+      console.log("got picture", picture);
+      await postCameraCapture(picture);
+    }
+  };
+
+  const postCameraCapture = async (cameraCapture: CameraCapturedPicture) => {
+    const formData = new FormData();
+    formData.append("height", cameraCapture.height.toString());
+    formData.append("width", cameraCapture.width.toString());
+    formData.append("base64", cameraCapture.base64!);
+    const response = await fetch("http://192.168.1.58:4000/image", {
+      method: "POST",
+      body: formData,
+    });
+    const data = await response.json();
+    console.log("Data from api", data);
   };
 
   if (hasPermission === null) {
@@ -43,7 +72,11 @@ export default function App() {
     <View style={styles.container}>
       {imageUri && (
         <View>
-          <Image source={{ uri: imageUri }} style={styles.image} />
+          <Image
+            ref={imageRef}
+            source={{ uri: imageUri }}
+            style={styles.image}
+          />
           <TouchableOpacity
             style={styles.clear}
             onPress={() => setImageUri(null)}

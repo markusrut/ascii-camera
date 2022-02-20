@@ -6,6 +6,7 @@
   "scripts": {
     "start": "nodemon src/main.ts",
     "debug": "nodemon --inspect src/main.ts",
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

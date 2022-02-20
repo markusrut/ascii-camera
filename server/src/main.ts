@@ -23,7 +23,9 @@ try {
     res.json("Image processed");
   });
 
-  server.post("/image", async (req, res) => {
+  server.post("/process", async (req, res) => {
+    console.time("processImage");
+
     const image = req.files?.image as fileUpload.UploadedFile;
     if (!image) {
       res.status(400).send("No image provided");
@@ -34,9 +36,10 @@ try {
     const imageData = image.data;
 
     const imagePath = save(imageName, imageData);
-    await processImage(imagePath);
+    const pixelGrid = await processImage(imagePath);
 
-    res.json("Image received");
+    console.timeEnd("processImage");
+    res.json(pixelGrid);
   });
 
   const port = process.env.APP_PORT || 5000;

@@ -1,7 +1,15 @@
 import React, { FC, useState } from "react";
-import { StyleSheet, TouchableOpacity, View, Text, Image } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Text,
+  Image,
+  ImageBackground,
+} from "react-native";
 import { PixelGrid } from "../types/pixel";
 import { AsciiImage } from "./AsciiImage";
+import { AsciiImageLoadingIndicator } from "./AsciiImageLoadingIndicator";
 
 type DisplayPictureProps = {
   pixelGrid: PixelGrid | null;
@@ -18,7 +26,7 @@ export const DisplayPicture: FC<DisplayPictureProps> = ({
   // const toggleColor = () => {
   //   setDisplayColor(!displayColor);
   // };
-  const [displayAscii, setDisplayAscii] = useState(false);
+  const [displayAscii, setDisplayAscii] = useState(true);
 
   const toggleAscii = () => {
     if (!pixelGrid) return;
@@ -34,8 +42,15 @@ export const DisplayPicture: FC<DisplayPictureProps> = ({
           style={styles.image}
         />
       )}
-      {!displayAscii && (
-        <Image source={{ uri: imageUri }} style={styles.image} />
+      {!(displayAscii && pixelGrid) && (
+        <ImageBackground source={{ uri: imageUri }} style={styles.image}>
+          <AsciiImageLoadingIndicator
+            width={400}
+            height={400}
+            charsInWidth={60}
+            charsInHeight={60}
+          />
+        </ImageBackground>
       )}
       <View style={styles.buttonRow}>
         <TouchableOpacity style={styles.button} onPress={onClear}>

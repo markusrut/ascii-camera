@@ -2,6 +2,7 @@ import { Camera, CameraCapturedPicture } from "expo-camera";
 import React, { FC, useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { convertToPixelGrid } from "../services/camera-service";
+import { processImage } from "../services/image-process";
 import { PixelGrid } from "../types/pixel";
 import { DisplayPicture } from "./DisplayPicture";
 import { TakePicture } from "./TakePicture";
@@ -18,7 +19,9 @@ export const AsciiCamera: FC<AsciiCameraProps> = ({}) => {
     setError(null);
     setImageUri(picture.uri);
     try {
-      const pixelGrid = await convertToPixelGrid(picture);
+      const pixelGrid = await processImage(picture.uri);
+
+      // const pixelGrid = await convertToPixelGrid(picture);
       setPixelGrid(pixelGrid);
     } catch (error) {
       if (error instanceof Error) setError(error);

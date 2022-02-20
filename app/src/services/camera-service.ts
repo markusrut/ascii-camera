@@ -5,8 +5,8 @@ export async function convertToPixelGrid(
   cameraCapture: CameraCapturedPicture
 ): Promise<PixelGrid> {
   const response = await fetch(
-    // "https://jpqdaqxi62.eu-west-1.awsapprunner.com/process",
-    "http://192.168.1.58:4000/process",
+    "https://jpqdaqxi62.eu-west-1.awsapprunner.com/process",
+    // "http://192.168.1.58:4000/process",
     {
       method: "POST",
       body: getFormData(cameraCapture),

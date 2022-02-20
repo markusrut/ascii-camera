@@ -2,9 +2,12 @@ name: Deploy to Amazon ECR
 
 on:
   push:
-    branches:
-      - main
-
+    # paths:
+    #   - "server/**"
+    # branches:
+    #   - main
+    tags:
+      - "release"
 env:
   AWS_REGION: eu-west-1
   ECR_REPOSITORY: ascii-camera

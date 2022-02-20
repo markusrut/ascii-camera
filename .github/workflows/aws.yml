@@ -34,11 +34,11 @@ on:
 env:
   AWS_REGION: eu-north-1                   # set this to your preferred AWS region, e.g. us-west-1
   ECR_REPOSITORY: ascii-camera           # set this to your Amazon ECR repository name
-  ECS_SERVICE: nginx-service                # set this to your Amazon ECS service name
-  ECS_CLUSTER: default                 # set this to your Amazon ECS cluster name
+  ECS_SERVICE: image-process                # set this to your Amazon ECS service name
+  ECS_CLUSTER: Dev                 # set this to your Amazon ECS cluster name
   ECS_TASK_DEFINITION: .aws/task-definition.json # set this to the path to your Amazon ECS task definition
                                                # file, e.g. .aws/task-definition.json
-  CONTAINER_NAME: nginx           # set this to the name of the container in the
+  CONTAINER_NAME: image-process           # set this to the name of the container in the
                                                # containerDefinitions section of your task definition
 
 jobs:
@@ -72,7 +72,7 @@ jobs:
         # push it to ECR so that it can
         # be deployed to ECS.
         echo $ECR_REGISTRY
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./server
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 

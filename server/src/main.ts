@@ -17,11 +17,8 @@ try {
   server.use("/", (req, res) => {
     res.send("OK");
   });
-
-  server.use("/test", async (req, res) => {
-    const testImagePath = "./images/test.jpg";
-    await processImage(testImagePath);
-    res.json("Image processed");
+  server.use("/hello", (req, res) => {
+    res.send("Hello world");
   });
 
   server.post("/process", async (req, res) => {

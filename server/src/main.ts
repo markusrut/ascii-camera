@@ -12,15 +12,15 @@ try {
   server.use(express.urlencoded({ extended: true }));
   server.use(cors());
   server.use("/health", (req, res) => {
-    res.send("OK");
-  });
-  server.use("/", (req, res) => {
-    res.send("OK");
+    res.status(200).json({ uptime: process.uptime() });
   });
   server.use("/hello", (req, res) => {
     res.send("Hello world");
   });
 
+  server.use("/", (req, res) => {
+    res.status(200).send("Main route");
+  });
   server.post("/process", async (req, res) => {
     console.time("processImage");
 

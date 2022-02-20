@@ -9,6 +9,12 @@ export async function convertToPixelGrid(
     body: getFormData(cameraCapture),
   });
 
+  if (response.status !== 200) {
+    throw new Error(
+      `Error processing image: ${response.status} ${await response.text()}`
+    );
+  }
+
   return (await response.json()) as PixelGrid;
 }
 

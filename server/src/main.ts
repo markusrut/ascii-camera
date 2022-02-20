@@ -2,9 +2,7 @@ import "dotenv/config";
 import express from "express";
 import fileUpload from "express-fileupload";
 import cors from "cors";
-import Jimp from "jimp";
-import fs from "fs";
-import { process as processImage, save } from "./image";
+import { process as processImage, remove, save } from "./image";
 
 try {
   var server = express();
@@ -37,9 +35,10 @@ try {
 
     const imagePath = save(imageName, imageData);
     const pixelGrid = await processImage(imagePath);
+    remove(imagePath);
 
     console.timeEnd("processImage");
-    res.json(pixelGrid);
+    res.status(200).json(pixelGrid);
   });
 
   const port = process.env.APP_PORT || 5000;

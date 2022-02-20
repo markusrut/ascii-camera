@@ -10,12 +10,12 @@ export function save(imageName: string, imageData: Buffer) {
   }
 
   fs.writeFileSync(imagePath, imageData);
-
-  console.log("Image saved to", imagePath);
   return imagePath;
 }
 
-const densityChars = " .,:;i1tfLCG08@";
+export function remove(imagePath: string) {
+  fs.rmSync(imagePath);
+}
 
 type PixelData = {
   rgba: {

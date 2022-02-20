@@ -1,14 +1,20 @@
 import { Camera, CameraCapturedPicture } from "expo-camera";
+import { CameraType } from "expo-camera/build/Camera.types";
 import React, { FC, useEffect, useRef, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 type TakePictureProps = {
   onPictureTaken: (picture: CameraCapturedPicture) => Promise<void>;
+  cameraType: CameraType;
+  setCameraType: (type: CameraType) => void;
 };
 
-export const TakePicture: FC<TakePictureProps> = ({ onPictureTaken }) => {
+export const TakePicture: FC<TakePictureProps> = ({
+  onPictureTaken,
+  cameraType,
+  setCameraType,
+}) => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
   const cameraRef = useRef<Camera>(null);
 
   useEffect(() => {
@@ -19,8 +25,8 @@ export const TakePicture: FC<TakePictureProps> = ({ onPictureTaken }) => {
   }, []);
 
   const toggleFlip = () => {
-    setType(
-      type === Camera.Constants.Type.back
+    setCameraType(
+      cameraType === Camera.Constants.Type.back
         ? Camera.Constants.Type.front
         : Camera.Constants.Type.back
     );
@@ -44,7 +50,7 @@ export const TakePicture: FC<TakePictureProps> = ({ onPictureTaken }) => {
   }
   return (
     <View style={styles.container}>
-      <Camera ref={cameraRef} style={styles.camera} type={type} />
+      <Camera ref={cameraRef} style={styles.camera} type={cameraType} />
       <View style={styles.buttonRow}>
         <TouchableOpacity style={styles.button} onPress={toggleFlip}>
           <Text style={styles.buttonText}> Flip Camera</Text>

@@ -14,6 +14,9 @@ try {
   server.use("/health", (req, res) => {
     res.send("OK");
   });
+  server.use("/", (req, res) => {
+    res.send("OK");
+  });
 
   server.use("/test", async (req, res) => {
     const testImagePath = "./images/test.jpg";

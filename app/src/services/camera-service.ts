@@ -4,10 +4,14 @@ import { PixelGrid } from "../types/pixel";
 export async function convertToPixelGrid(
   cameraCapture: CameraCapturedPicture
 ): Promise<PixelGrid> {
-  const response = await fetch("http://192.168.1.58:4000/process", {
-    method: "POST",
-    body: getFormData(cameraCapture),
-  });
+  const response = await fetch(
+    // "https://jpqdaqxi62.eu-west-1.awsapprunner.com/process",
+    "http://192.168.1.58:4000/process",
+    {
+      method: "POST",
+      body: getFormData(cameraCapture),
+    }
+  );
 
   if (response.status !== 200) {
     throw new Error(

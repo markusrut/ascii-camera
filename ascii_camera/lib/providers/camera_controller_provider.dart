@@ -10,7 +10,7 @@ Future<CameraController> cameraController(CameraControllerRef ref) async {
 
   final controller = CameraController(
     cameras.first,
-    ResolutionPreset.max,
+    ResolutionPreset.low,
   );
 
   ref.onDispose(() {
